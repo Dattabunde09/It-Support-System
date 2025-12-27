@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Invalid Link - IT Support Ticket System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+                <h3 class="card-title mt-3">Invalid Verification Link</h3>
+                <p class="card-text">This verification link is not valid.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Go to Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

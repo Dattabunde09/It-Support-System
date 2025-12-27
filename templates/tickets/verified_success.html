@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Email Verified - IT Support Ticket System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                <h3 class="card-title mt-3">Email Verified Successfully</h3>
+                <p class="card-text">Your email address has been verified. You can now log in to your account.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Go to Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

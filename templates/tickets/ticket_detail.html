@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ ticket.title }} - IT Support System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Ticket Details -->
+            <div class="card shadow mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">{{ ticket.title }}</h4>
+                    <div>
+                        <span class="status-badge status-{{ ticket.status }} me-2">
+                            {{ ticket.get_status_display }}
+                        </span>
+                        <span class="priority-badge priority-{{ ticket.priority }}">
+                            {{ ticket.get_priority_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted">Description</h6>
+                        <p class="mb-0">{{ ticket.description|linebreaks }}</p>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2">
+                                <strong><i class="bi bi-person"></i> Created By:</strong> 
+                                {{ ticket.created_by.username }}
+                            </p>
+                            <p class="mb-2">
+                                <strong><i class="bi bi-calendar"></i> Created:</strong> 
+                                {{ ticket.created_at|date:"F d, Y H:i" }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2">
+                                <strong><i class="bi bi-person-check"></i> Assigned To:</strong> 
+                                {% if ticket.assigned_to %}
+                                    <span class="badge bg-info">{{ ticket.assigned_to.username }}</span>
+                                {% else %}
+                                    <span class="text-muted">Unassigned</span>
+                                {% endif %}
+                            </p>
+                            <p class="mb-2">
+                                <strong><i class="bi bi-clock"></i> Last Updated:</strong> 
+                                {{ ticket.updated_at|date:"F d, Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    {% if ticket.resolved_at %}
+                        <p class="mb-0 text-success">
+                            <i class="bi bi-check-circle"></i> Resolved: {{ ticket.resolved_at|date:"F d, Y H:i" }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Comments</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Comments List -->
+                    <div class="mb-4">
+                        {% for comment in comments %}
+                            <div class="card mb-3 {% if comment.is_system_message %}comment-system{% endif %}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <strong>
+                                                {% if comment.is_system_message %}
+                                                    <i class="bi bi-gear"></i> System
+                                                {% else %}
+                                                    <i class="bi bi-person"></i> {{ comment.author.username }}
+                                                {% endif %}
+                                            </strong>
+                                            <span class="text-muted ms-2">
+                                                ({{ comment.author.get_role_display }})
+                                            </span>
+                                        </div>
+                                        <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-0">{{ comment.content|linebreaks }}</p>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted text-center py-3">No comments yet. Be the first to comment!</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Add Comment Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ comment_form.content }}
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="add_comment">
+                            <i class="bi bi-send"></i> Add Comment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Status Update (IT Staff/Admin only) -->
+            {% if user.is_it_staff or user.is_admin %}
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-gear"></i> Ticket Actions</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Update Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Open</option>
+                                <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                                <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Closed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" name="update_status">
+                            <i class="bi bi-arrow-repeat"></i> Update Status
+                        </button>
+                    </form>
+                    
+                    <hr>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'ticket_update' ticket.id %}" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Edit Ticket
+                        </a>
+                        {% if user.is_admin %}
+                            <a href="{% url 'ticket_delete' ticket.id %}" class="btn btn-outline-danger">
+                                <i class="bi bi-trash"></i> Delete Ticket
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Ticket Info -->
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Ticket Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <strong>Ticket ID:</strong> #{{ ticket.id }}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Status:</strong> 
+                        <span class="status-badge status-{{ ticket.status }}">
+                            {{ ticket.get_status_display }}
+                        </span>
+                    </p>
+                    <p class="mb-2">
+                        <strong>Priority:</strong> 
+                        <span class="priority-badge priority-{{ ticket.priority }}">
+                            {{ ticket.get_priority_display }}
+                        </span>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Comments:</strong> {{ comments.count }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

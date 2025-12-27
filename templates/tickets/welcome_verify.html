@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome – Verify Your Email</title>
+</head>
+<body style="margin:0; padding:0; background-color:#0f0f0f; font-family:Arial, sans-serif;">
+
+    <div style="max-width:600px; margin:40px auto; background-color:#161616;
+                border-radius:12px; padding:30px; color:#ffffff;">
+
+        <h2 style="text-align:center; margin-bottom:20px;
+           font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;">
+        <span style="color:#4da3ff;">
+        🎉 Welcome to IT Support System<span style="margin-left:3px;">!</span>
+        </span>
+        </h2>
+
+        <p style="font-size:15px;color:#ffffff;">
+            Hi <strong>{{ user.username }}</strong>,
+        </p>
+
+        <p style="font-size:14px; line-height:1.6;color:#ffffff;">
+            Your account has been successfully created.
+            You're just one step away from activating your account 🚀
+        </p>
+
+        <hr style="border:0; border-top:1px solid #ffffffff; margin:20px 0;">
+
+        <p style="font-size:14px;color:#ffffff;">
+            Here’s what you can do after verification:
+        </p>
+
+        <ul style="font-size:14px; line-height:1.8; padding-left:20px;">
+            <li>🛠 Resolve IT issues faster with our system</li>
+            <li>📊 Manage your IT issues efficiently</li>
+            <li>🔐 Keep your account secure</li>
+        </ul>
+
+        <div style="text-align:center; margin:30px 0;">
+            <a href="{{ verify_link }}"
+               style="background:#4da3ff; color:#000000; padding:14px 26px;
+                      text-decoration:none; border-radius:8px;
+                      font-weight:bold; display:inline-block;">
+                ✅ Verify Your Email
+            </a>
+        </div>
+
+        <p style="font-size:13px; color:#ffffff;; text-align:center;">
+            ⏰ This verification link will expire in <strong>24 hours</strong>.
+        </p>
+
+        <p style="font-size:13px; color:#ffffff;">
+            If you did not create this account, you can safely ignore this email.
+        </p>
+
+        <hr style="border:0; border-top:1px solid #ffffffff; margin:25px 0;">
+
+        <p style="font-size:13px;color:#ffffff;">
+            Need help? Contact us at
+            <a href="mailto:ticketsystem.mail09@gmail.com" style="color:#4da3ff;">
+                ticketsystem.mail09@gmail.com
+            </a>
+        </p>
+
+        <p style="font-size:13px; margin-top:20px;color:#ffffff;">
+            Best regards,<br>
+            <strong>IT Support Team</strong> 💼
+        </p>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Ticket - IT Support System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Support Ticket</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label">Title <span class="text-danger">*</span></label>
+                        {{ form.title }}
+                        <small class="form-text text-muted">Provide a clear, concise title for your issue</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label">Description <span class="text-danger">*</span></label>
+                        {{ form.description }}
+                        <small class="form-text text-muted">Describe your issue in detail. Include steps to reproduce if applicable.</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_priority" class="form-label">Priority <span class="text-danger">*</span></label>
+                        {{ form.priority }}
+                        <small class="form-text text-muted">
+                            <strong>Urgent:</strong> System down, critical business impact<br>
+                            <strong>High:</strong> Major functionality affected<br>
+                            <strong>Medium:</strong> Minor functionality affected (default)<br>
+                            <strong>Low:</strong> General inquiry or enhancement request
+                        </small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Create Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - IT Support System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
+        <a href="{% url 'ticket_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Ticket
+        </a>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card open">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Tickets</h6>
+                            <h2 class="mb-0">{{ stats.total }}</h2>
+                        </div>
+                        <i class="bi bi-ticket-perforated fs-1 text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card open">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Open</h6>
+                            <h2 class="mb-0">{{ stats.open }}</h2>
+                        </div>
+                        <i class="bi bi-circle fs-1 text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card in-progress">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">In Progress</h6>
+                            <h2 class="mb-0">{{ stats.in_progress }}</h2>
+                        </div>
+                        <i class="bi bi-arrow-repeat fs-1 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card resolved">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Resolved</h6>
+                            <h2 class="mb-0">{{ stats.resolved }}</h2>
+                        </div>
+                        <i class="bi bi-check-circle fs-1 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Priority Breakdown -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Priority Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <span class="priority-badge priority-urgent">Urgent</span>
+                            <h3 class="mt-2">{{ priority_stats.urgent }}</h3>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <span class="priority-badge priority-high">High</span>
+                            <h3 class="mt-2">{{ priority_stats.high }}</h3>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <span class="priority-badge priority-medium">Medium</span>
+                            <h3 class="mt-2">{{ priority_stats.medium }}</h3>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <span class="priority-badge priority-low">Low</span>
+                            <h3 class="mt-2">{{ priority_stats.low }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Tickets -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Tickets</h5>
+                    <a href="{% url 'ticket_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_tickets %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Priority</th>
+                                        <th>Created By</th>
+                                        <th>Assigned To</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ticket in recent_tickets %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'ticket_detail' ticket.id %}" class="text-decoration-none">
+                                                {{ ticket.title|truncatewords:10 }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge status-{{ ticket.status }}">
+                                                {{ ticket.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="priority-badge priority-{{ ticket.priority }}">
+                                                {{ ticket.get_priority_display }}
+                                            </span>
+                                        </td>
+                                        <td>{{ ticket.created_by.username }}</td>
+                                        <td>
+                                            {% if ticket.assigned_to %}
+                                                {{ ticket.assigned_to.username }}
+                                            {% else %}
+                                                <span class="text-muted">Unassigned</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ ticket.created_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4">No tickets found. <a href="{% url 'ticket_create' %}">Create your first ticket</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
