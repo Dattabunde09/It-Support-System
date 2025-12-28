@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-your-secret-key-change-in-production-12345'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -164,5 +164,6 @@ EMAIL_HOST_USER = 'ticketsystem.mail09@gmail.com'
 EMAIL_HOST_PASSWORD = 'ihwi jovb erfw nqyj'
 
 DEFAULT_FROM_EMAIL = 'IT Support System <ticketsystem.mail09@gmail.com>'
+CSRF_TRUSTED_ORIGINS = ['https://it-support-system.onrender.com']
 
 
