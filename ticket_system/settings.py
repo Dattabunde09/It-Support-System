@@ -4,6 +4,7 @@ Django settings for ticket_system project.
 
 from pathlib import Path
 import os
+import dj_database_url  # Add this at the top
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,18 +69,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ticket_system.wsgi.application'
 
+# Replace your old DATABASES = { ... } with this:
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600
+    )
 }
-
-
 
 
 # Password validation
