@@ -1,10 +1,9 @@
 """
 Django settings for ticket_system project.
 """
-
+import dj_database_url  # Add this at the top of settings.py
 from pathlib import Path
 import os
-import dj_database_url  # Add this at the top
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
