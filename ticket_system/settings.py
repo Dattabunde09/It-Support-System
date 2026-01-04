@@ -69,7 +69,7 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 if ENVIRONMENT == "production":
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
+            "ENGINE": "django.db.backends.postgresql_psycopg",
             "NAME": os.getenv("PG_DB_NAME"),
             "USER": os.getenv("PG_DB_USER"),
             "PASSWORD": os.getenv("PG_DB_PASSWORD"),
