@@ -4,6 +4,7 @@ Django settings for ticket_system project.
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,10 +14,10 @@ load_dotenv(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key-change-in-production-12345'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ["*", ".onrender.com"]
 
 
@@ -67,19 +68,12 @@ TEMPLATES = [
 ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
 if ENVIRONMENT == "production":
-    # AIVEN POSTGRESQL (RENDER)
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB_NAME"),
-            "USER": os.getenv("POSTGRES_DB_USER"),
-            "PASSWORD": os.getenv("POSTGRES_DB_PASSWORD"),
-            "HOST": os.getenv("POSTGRES_DB_HOST"),
-            "PORT": os.getenv("POSTGRES_DB_PORT", "5432"),
-            "OPTIONS": {
-                "sslmode": "require",
-            },
-        }
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True
+        )
     }
 else:
     # LOCAL MYSQL (VS CODE)
