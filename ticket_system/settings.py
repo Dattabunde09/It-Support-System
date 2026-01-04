@@ -68,11 +68,17 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
 if ENVIRONMENT == "production":
     DATABASES = {
-        "default": dj_database_url.config(
-            default=os.getenv("DATABASE_URL"),
-            conn_max_age=600,
-            ssl_require=True
-        )
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("PG_DB_NAME"),
+            "USER": os.getenv("PG_DB_USER"),
+            "PASSWORD": os.getenv("PG_DB_PASSWORD"),
+            "HOST": os.getenv("PG_DB_HOST"),
+            "PORT": os.getenv("PG_DB_PORT"),
+            "OPTIONS": {
+                "sslmode": "require",
+            },
+        }
     }
 else:
     # LOCAL MYSQL (VS CODE)
