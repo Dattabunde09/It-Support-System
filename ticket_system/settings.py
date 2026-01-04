@@ -64,34 +64,30 @@ TEMPLATES = [
     },
 ]
 
-ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
+import os
+import dj_database_url
 
-if ENVIRONMENT == "production":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("PG_DB_NAME"),
-            "USER": os.getenv("PG_DB_USER"),
-            "PASSWORD": os.getenv("PG_DB_PASSWORD"),
-            "HOST": os.getenv("PG_DB_HOST"),
-            "PORT": os.getenv("PG_DB_PORT"),
-            "OPTIONS": {
-                "sslmode": "require",
-            },
-        }
-    }
-else:
-    # LOCAL MYSQL (VS CODE)
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": os.getenv("MYSQL_DB_NAME"),
-            "USER": os.getenv("MYSQL_DB_USER"),
-            "PASSWORD": os.getenv("MYSQL_DB_PASSWORD"),
-            "HOST": os.getenv("MYSQL_DB_HOST"),
-            "PORT": os.getenv("MYSQL_DB_PORT", "3306"),
-        }
-    }
+DATABASES = {
+    "default": dj_database_url.parse(
+        os.environ.get("DATABASE_URL"),
+        engine="django.db.backends.postgresql",
+        conn_max_age=600,
+        ssl_require=True,
+    )
+}
+
+# else:
+#     # LOCAL MYSQL (VS CODE)
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.mysql",
+#             "NAME": os.getenv("MYSQL_DB_NAME"),
+#             "USER": os.getenv("MYSQL_DB_USER"),
+#             "PASSWORD": os.getenv("MYSQL_DB_PASSWORD"),
+#             "HOST": os.getenv("MYSQL_DB_HOST"),
+#             "PORT": os.getenv("MYSQL_DB_PORT", "3306"),
+#         }
+#     }
 
 # DATABASES = {}
 # if os.environ.get("DATABASE_URL"):
