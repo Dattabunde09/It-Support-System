@@ -1,13 +1,13 @@
 """
 Django settings for ticket_system project.
 """
-import dj_database_url  # Add this at the top of settings.py
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -16,10 +16,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-your-secret-key-change-in-production-12345'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
-ALLOWED_HOSTS = ['*']
-
+DEBUG = True
+ALLOWED_HOSTS = ["*", ".onrender.com"]
 
 
 # Application definition
@@ -66,15 +64,54 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ticket_system.wsgi.application'
+ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
-# Replace your old DATABASES = { ... } with this:
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600
-    )
-}
+if ENVIRONMENT == "production":
+    # AIVEN POSTGRESQL (RENDER)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB_NAME"),
+            "USER": os.getenv("POSTGRES_DB_USER"),
+            "PASSWORD": os.getenv("POSTGRES_DB_PASSWORD"),
+            "HOST": os.getenv("POSTGRES_DB_HOST"),
+            "PORT": os.getenv("POSTGRES_DB_PORT", "5432"),
+            "OPTIONS": {
+                "sslmode": "require",
+            },
+        }
+    }
+else:
+    # LOCAL MYSQL (VS CODE)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.getenv("MYSQL_DB_NAME"),
+            "USER": os.getenv("MYSQL_DB_USER"),
+            "PASSWORD": os.getenv("MYSQL_DB_PASSWORD"),
+            "HOST": os.getenv("MYSQL_DB_HOST"),
+            "PORT": os.getenv("MYSQL_DB_PORT", "3306"),
+        }
+    }
+
+# DATABASES = {}
+# if os.environ.get("DATABASE_URL"):
+#     DATABASES["default"] = dj_database_url.config(
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
+
+# # Local / Development (MySQL)
+# else:
+#     DATABASES["default"] = {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "ticket_system_db",
+#         "USER": "root",
+#         "PASSWORD": "tiger",
+#         "HOST": "localhost",
+#         "PORT": "3306",
+        
+#     }
 
 
 # Password validation
@@ -109,12 +146,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -150,15 +188,20 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 # ================= EMAIL SETTINGS =================
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Use SMTP backend for both development and production to ensure emails are sent
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
+EMAIL_PORT = 587
+
+EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'ticketsystem.mail09@gmail.com'
-EMAIL_HOST_PASSWORD = 'ihwi jovb erfw nqyj'
+# Use environment variables for email credentials (more secure)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'ticketsystem.mail09@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'wtiy pbqw nmjc jtdq')
 
-DEFAULT_FROM_EMAIL = 'IT Support System <ticketsystem.mail09@gmail.com>'
+DEFAULT_FROM_EMAIL = f'IT Support System <{EMAIL_HOST_USER}>'
 CSRF_TRUSTED_ORIGINS = ['https://it-support-system.onrender.com']
 
 

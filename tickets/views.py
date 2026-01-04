@@ -50,13 +50,13 @@ def register_view(request):
     """User registration view"""
     if request.user.is_authenticated:
         return redirect('dashboard')
-    
+
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            # Only require email verification for admin users
-            user.is_active = user.role != 'admin'
+            # Require email verification for all users
+            user.is_active = False
             user.save()
 
             verification = EmailVerification.objects.create(user=user)
@@ -73,17 +73,12 @@ def register_view(request):
                 )
                 return redirect('login')
 
-            if user.is_active:
-                # Non-admin users can log in immediately
-                messages.success(request, 'Registration successful! You can now log in.')
-                return redirect('login')
-            else:
-                # Admin users need to verify email
-                return render(
-                    request,
-                    'tickets/email_verification_sent.html',
-                    {'email': user.email}
-                )
+            # All users need to verify email
+            return render(
+                request,
+                'tickets/email_verification_sent.html',
+                {'email': user.email}
+            )
     else:
         form = CustomUserCreationForm()
     return render(request, 'tickets/register.html', {'form': form})

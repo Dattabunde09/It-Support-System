@@ -74,23 +74,45 @@ A full-stack IT Support Ticket Management System built with Django and MySQL tha
    }
    ```
 
-7. **Run Migrations**:
+7. **Configure Email Settings** (Optional but recommended for email verification):
+   The system is configured to send real emails during development. You can use the default Gmail account or set up your own:
+
+   **Option 1: Use Environment Variables (Recommended for security)**
+   Create a `.env` file in the project root:
+   ```bash
+   EMAIL_HOST_USER=your-email@gmail.com
+   EMAIL_HOST_PASSWORD=your-app-password
+   ```
+
+   **Option 2: Direct configuration in settings.py**
+   Edit the email settings in `ticket_system/settings.py`:
+   ```python
+   EMAIL_HOST_USER = 'your-email@gmail.com'
+   EMAIL_HOST_PASSWORD = 'your-app-password'
+   ```
+
+   **Note**: For Gmail, you'll need to:
+   - Enable 2-factor authentication
+   - Generate an "App Password" in Google Account settings
+   - Use the App Password (not your regular password) in the configuration
+
+8. **Run Migrations**:
    ```bash
    python manage.py makemigrations
    python manage.py migrate
    ```
 
-8. **Create a Superuser** (Administrator):
+9. **Create a Superuser** (Administrator):
    ```bash
    python manage.py createsuperuser
    ```
 
-9. **Run the Development Server**:
-   ```bash
-   python manage.py runserver
-   ```
+10. **Run the Development Server**:
+    ```bash
+    python manage.py runserver
+    ```
 
-10. **Access the Application**:
+11. **Access the Application**:
     - Web Interface: http://127.0.0.1:8000/
     - Admin Panel: http://127.0.0.1:8000/admin/
 
