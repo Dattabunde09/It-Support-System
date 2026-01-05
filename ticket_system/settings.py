@@ -16,7 +16,7 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = "False"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -65,13 +65,10 @@ TEMPLATES = [
     },
 ]
 
-import os
 import dj_database_url
 
 DATABASES = {
-    "default": dj_database_url.parse(
-        os.environ.get("DATABASE_URL"),
-        engine="django.db.backends.postgresql",
+    'default': dj_database_url.config(
         conn_max_age=600,
         ssl_require=True,
     )
@@ -184,20 +181,15 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 # ================= EMAIL SETTINGS =================
-# Use SMTP backend for both development and production to ensure emails are sent
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-
-EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
 
-# Use environment variables for email credentials (more secure)
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'ticketsystem.mail09@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'wtiy pbqw nmjc jtdq')
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = f'IT Support System <{EMAIL_HOST_USER}>'
-CSRF_TRUSTED_ORIGINS = ['https://it-support-system.onrender.com']
 
 
