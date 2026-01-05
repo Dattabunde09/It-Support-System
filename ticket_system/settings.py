@@ -180,32 +180,17 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# # ================= EMAIL SETTINGS =================
+# ================= EMAIL SETTINGS =================
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
-# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-# DEFAULT_FROM_EMAIL = f'IT Support System <{EMAIL_HOST_USER}>'
-
-import os
-import dj_database_url
-
-# DATABASE
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
-
-# Resend API Key for sending real emails
-RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+DEFAULT_FROM_EMAIL = f'IT Support System <{EMAIL_HOST_USER}>'
 
 
 
