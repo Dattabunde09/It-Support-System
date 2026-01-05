@@ -180,17 +180,31 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# ================= EMAIL SETTINGS =================
+# # ================= EMAIL SETTINGS =================
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+
+# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+# DEFAULT_FROM_EMAIL = f'IT Support System <{EMAIL_HOST_USER}>'
+# settings.py
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.resend.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = "resend"
+EMAIL_HOST_PASSWORD = os.getenv("RESEND_API_KEY")
 
-DEFAULT_FROM_EMAIL = f'IT Support System <{EMAIL_HOST_USER}>'
+DEFAULT_FROM_EMAIL = "IT Support System <onboarding@resend.dev>"
+
+
 
 
 
