@@ -43,7 +43,7 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('content', 'ticket__title', 'author__username')
 
 class EmailVerificationAdmin(admin.ModelAdmin):
-    list_display = ['user', 'token', 'created_at', 'expires_at']
+    list_display = ['user', 'code', 'created_at', 'expires_at']
     list_filter = ['created_at']  # cannot use expires_at here
 admin.site.register(EmailVerification, EmailVerificationAdmin)
 

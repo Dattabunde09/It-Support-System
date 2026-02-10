@@ -17,7 +17,7 @@ urlpatterns = [
     path('tickets/<int:ticket_id>/update/', views.ticket_update, name='ticket_update'),
     path('tickets/<int:ticket_id>/delete/', views.ticket_delete, name='ticket_delete'),
     path('users/delete/<int:user_id>/', views.delete_user, name='delete_user'),
-    path("verify-email/<uuid:token>/", views.verify_email, name="verify_email"),
+    path("verify-email/", views.verify_email, name="verify_email"),
     path("resend-verification/<int:user_id>/", views.resend_verification_email, name="resend_verification"),
 
 

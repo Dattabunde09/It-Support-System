@@ -133,13 +133,24 @@ class Comment(models.Model):
 
 
 # ================= EMAIL VERIFICATION MODEL =================
-import uuid
+import random
+import string
 from django.utils.timezone import now, timedelta
 
 class EmailVerification(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    token = models.UUIDField(default=uuid.uuid4, unique=True)
+    code = models.CharField(max_length=6, unique=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = self.generate_code()
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def generate_code():
+        """Generate a 6-digit random code"""
+        return ''.join(random.choices(string.digits, k=6))
 
     def is_expired(self):
         return now() > self.created_at + timedelta(hours=24)

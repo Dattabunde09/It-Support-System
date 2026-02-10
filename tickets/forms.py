@@ -135,6 +135,21 @@ class UserProfileForm(forms.ModelForm):
             "department": forms.TextInput(attrs={"class": "form-control"}),
         }
 
+class CodeVerificationForm(forms.Form):
+    """Form for entering email verification code"""
+    code = forms.CharField(
+        max_length=6,
+        min_length=6,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter 6-digit code',
+            'pattern': '[0-9]{6}',
+            'inputmode': 'numeric'
+        }),
+        label="Verification Code"
+    )
+
+
 class AdminUserForm(forms.ModelForm):
     """
     Admin-level form that can also change role and active status.

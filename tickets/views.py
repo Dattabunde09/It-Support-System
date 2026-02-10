@@ -20,20 +20,18 @@ from .forms import (
     CustomUserCreationForm,
     UserProfileForm,
     AdminUserForm,
+    CodeVerificationForm,
 )
 def _send_verification_email(request, verification: EmailVerification) -> None:
     """
-    Helper that sends an email containing the verification link.
+    Helper that sends an email containing the verification code.
     """
-    verify_url = request.build_absolute_uri(
-        reverse('verify_email', args=[verification.token])
-    )
     subject = "Verify your email - IT Support Ticket System"
     message = (
         f"Hello {verification.user.display_name},\n\n"
         "Thanks for registering with the IT Support Ticket System. "
-        "Please verify your email address by clicking the link below:\n\n"
-        f"{verify_url}\n\n"
+        f"Your verification code is: {verification.code}\n\n"
+        "Please enter this code on the verification page to activate your account.\n\n"
         "If you did not create this account, please ignore this email."
     )
 
@@ -61,10 +59,7 @@ def register_view(request):
 
             verification = EmailVerification.objects.create(user=user)
             try:
-                verify_url = request.build_absolute_uri(
-                    reverse('verify_email', args=[verification.token])
-                )
-                send_welcome_email(user, verify_url)
+                send_welcome_email(user, verification.code)
             except Exception:
                 messages.error(
                     request,
@@ -390,26 +385,35 @@ def profile_view(request):
 from django.shortcuts import render
 from .models import EmailVerification
 
-def verify_email(request, token):
-    try:
-        verification = EmailVerification.objects.get(token=token)
+def verify_email(request):
+    if request.method == 'POST':
+        form = CodeVerificationForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data['code']
+            try:
+                verification = EmailVerification.objects.get(code=code)
 
-        # Check if token is expired
-        if verification.is_expired():
-            return render(request, "tickets/link_expired.html")
+                # Check if code is expired
+                if verification.is_expired():
+                    return render(request, "tickets/link_expired.html")
 
-        # Activate user
-        user = verification.user
-        user.is_active = True
-        user.save()
+                # Activate user
+                user = verification.user
+                user.is_active = True
+                user.save()
 
-        # Delete verification record
-        verification.delete()
+                # Delete verification record
+                verification.delete()
 
-        return render(request, "tickets/verified_success.html")
+                return render(request, "tickets/verified_success.html")
 
-    except EmailVerification.DoesNotExist:
-        return render(request, "tickets/invalid_link.html")
+            except EmailVerification.DoesNotExist:
+                messages.error(request, "Invalid verification code. Please check and try again.")
+                return render(request, "tickets/verification_error.html", {'form': form})
+    else:
+        form = CodeVerificationForm()
+
+    return render(request, "tickets/verify_email.html", {'form': form})
     from django.contrib import messages
 from django.shortcuts import redirect
 
@@ -430,12 +434,9 @@ def resend_verification_email(request, user_id):
 
         # Create new token
         verification = EmailVerification.objects.create(user=user)
-        verify_link = request.build_absolute_uri(
-            reverse("verify_email", args=[verification.token])
-        )
 
         # Send email
-        send_welcome_email(user, verify_link)
+        send_welcome_email(user, verification.code)
         messages.success(request, "Verification email resent successfully.")
         return redirect("login")
 

@@ -8,7 +8,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 def send_welcome_email(user, verify_link):
-    """Send welcome email with verification link"""
+    """Send welcome email with verification code"""
     subject = "Welcome to IT Support System – Verify Your Email"
 
     try:

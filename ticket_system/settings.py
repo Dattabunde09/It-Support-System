@@ -67,44 +67,21 @@ TEMPLATES = [
 
 import dj_database_url
 
-DATABASES = {
-    'default': dj_database_url.config(
+DATABASES = {}
+if os.environ.get("DATABASE_URL"):
+    DATABASES["default"] = dj_database_url.config(
         conn_max_age=600,
-        ssl_require=True,
+        ssl_require=True
     )
-}
-
-# else:
-#     # LOCAL MYSQL (VS CODE)
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.mysql",
-#             "NAME": os.getenv("MYSQL_DB_NAME"),
-#             "USER": os.getenv("MYSQL_DB_USER"),
-#             "PASSWORD": os.getenv("MYSQL_DB_PASSWORD"),
-#             "HOST": os.getenv("MYSQL_DB_HOST"),
-#             "PORT": os.getenv("MYSQL_DB_PORT", "3306"),
-#         }
-#     }
-
-# DATABASES = {}
-# if os.environ.get("DATABASE_URL"):
-#     DATABASES["default"] = dj_database_url.config(
-#         conn_max_age=600,
-#         ssl_require=True
-#     )
-
-# # Local / Development (MySQL)
-# else:
-#     DATABASES["default"] = {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "ticket_system_db",
-#         "USER": "root",
-#         "PASSWORD": "tiger",
-#         "HOST": "localhost",
-#         "PORT": "3306",
-        
-#     }
+else:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "ticket_system_db",
+        "USER": "root",
+        "PASSWORD": "tiger",
+        "HOST": "localhost",
+        "PORT": "3306",
+    }
 
 
 # Password validation
@@ -182,15 +159,11 @@ CORS_ALLOW_CREDENTIALS = True
 
 # ================= EMAIL SETTINGS =================
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# Use SendGrid for email sending
+EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-
-DEFAULT_FROM_EMAIL = f'IT Support System <{EMAIL_HOST_USER}>'
+DEFAULT_FROM_EMAIL = 'IT Support System <noreply@yourdomain.com>'  # Replace with your verified sender
 
 
 
